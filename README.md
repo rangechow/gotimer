@@ -97,7 +97,7 @@ func main() {
     _, err := timer.AddTimer(time.Millisecond*1000, true, "CheckTimer", 10001)
 
     if err != nil {
-        t.Errorf("add timer failed %v", err)
+        fmt.Printf("add timer failed %v", err)
         return
     }
 
