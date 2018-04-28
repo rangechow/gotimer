@@ -59,7 +59,7 @@ func main() {
     s := new(exampleSvr)
 
     var timer gotimer.timerService
-    timer.Register(s, time.Millisecond*10, time.Hour*24*30)
+    timer.Register(s)
 
     _, err := timer.AddTimer(time.Millisecond*1000, true, "CheckTimer", 10001)
 
@@ -91,7 +91,7 @@ func main() {
     s := new(exampleSvr)
 
     var timer gotimer.timerService
-    timer.Register(s, time.Millisecond*10, time.Hour*24*30)
+    timer.Register(s)
     timer.AsyncRun()
 
     _, err := timer.AddTimer(time.Millisecond*1000, true, "CheckTimer", 10001)
@@ -138,6 +138,7 @@ Timer process flow change to : register handler --> add timer --> run timer serv
 There are general two types of timers:
   1.  one shot at specified time
   2.  repeat interval time
+
 We have api support for the above operation.
 And Trigger a handler by specifying handler name.
 When we add the timer, we need to specify the name of the handler, and we can pass the corresponding parameter to the handler.
