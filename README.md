@@ -60,12 +60,14 @@ func main() {
 
     var timer gotimer.timerService
     timer.Register(s)
+   
+    go func() {
+      _, err := timer.AddTimer(time.Millisecond*1000, true, "CheckTimer", 10001)
 
-    _, err := timer.AddTimer(time.Millisecond*1000, true, "CheckTimer", 10001)
-
-    if err != nil {
-        fmt.Printf("add timer failed %v", err)
-        return
+      if err != nil {
+          fmt.Printf("add timer failed %v", err)
+          return
+      }
     }
 
     timer.Run()
