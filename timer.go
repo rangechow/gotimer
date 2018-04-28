@@ -18,8 +18,8 @@ type timerHandler struct {
 	arg      reflect.Type
 }
 
-// timerService is timer manager, It can be used independently or as a module of the service
-type timerService struct {
+// TimerService is timer manager, It can be used independently or as a module of the service
+type TimerService struct {
 	isInit   bool
 	accuracy time.Duration //tick interval accuracy
 
@@ -42,7 +42,7 @@ const defaultAccuracy = 100 * time.Millisecond
 // SetAccuracy can change the accuracy of the timer.
 // default accuracy is 100 Millisecond.
 // It is only valid before run timer.
-func (t *timerService) SetAccuracy(accuracy time.Duration) error {
+func (t *TimerService) SetAccuracy(accuracy time.Duration) error {
 
 	if accuracy <= 0 {
 		return fmt.Errorf("accuracy must bigger than zero")
@@ -55,7 +55,7 @@ func (t *timerService) SetAccuracy(accuracy time.Duration) error {
 
 // Register add handler from type method to timer.
 // The name of the handler must be unique
-func (t *timerService) Register(svr interface{}) error {
+func (t *TimerService) Register(svr interface{}) error {
 
 	if !t.isInit {
 
@@ -117,7 +117,7 @@ func (t *timerService) Register(svr interface{}) error {
 
 // AddOneshotTimer will add a timer that trigger once at specified time.
 // It wrap AddTimer.
-func (t *timerService) AddOneshotTimer(datatime time.Time, handlerName string, args interface{}) (int, error) {
+func (t *TimerService) AddOneshotTimer(datatime time.Time, handlerName string, args interface{}) (int, error) {
 
 	now := time.Now()
 
@@ -133,7 +133,7 @@ func (t *timerService) AddOneshotTimer(datatime time.Time, handlerName string, a
 // AddTimer can add a timer that trigger from now until interval.
 // If you want the timer trigger repeate, you could set isRepeate true.
 // It is a blocking function that waiting timer's sequence
-func (t *timerService) AddTimer(interval time.Duration, isRepeate bool, handlerName string, args interface{}) (int, error) {
+func (t *TimerService) AddTimer(interval time.Duration, isRepeate bool, handlerName string, args interface{}) (int, error) {
 
 	if interval < 0 {
 		return 0, fmt.Errorf("Add timer failed, interval %d not allow", interval)
@@ -168,7 +168,7 @@ func (t *timerService) AddTimer(interval time.Duration, isRepeate bool, handlerN
 
 // doAddTimer receive event into the priority queue, and return the sequence number.
 // The add chan and addret chan have only one buffer
-func (t *timerService) doAddTimer(e *event) {
+func (t *TimerService) doAddTimer(e *event) {
 	t.sequence++
 	e.seq = t.sequence
 	heap.Push(&t.events, e)
@@ -177,13 +177,13 @@ func (t *timerService) doAddTimer(e *event) {
 
 // DelTimer send a sequence of deleting timer to timer goroutine.
 // The seq will push to a slice waiting for delete.
-func (t *timerService) DelTimer(seq int) {
+func (t *TimerService) DelTimer(seq int) {
 	t.del <- seq
 }
 
 // doDelTimer is the actual performer of the delete operation.
 // It will call everytime before checking timeout.
-func (t *timerService) doDelTimer() {
+func (t *TimerService) doDelTimer() {
 	for _, seq := range t.trash {
 		for _, e := range t.events {
 			if e.seq == seq {
@@ -197,7 +197,7 @@ func (t *timerService) doDelTimer() {
 }
 
 // runTimeout triggers a timeout timer and calls the corresponding hangler.
-func (t *timerService) runTimeout() {
+func (t *TimerService) runTimeout() {
 
 	now := time.Now()
 
@@ -239,7 +239,7 @@ func (t *timerService) runTimeout() {
 }
 
 // Run function synchronous execution timer service.
-func (t *timerService) Run() {
+func (t *TimerService) Run() {
 	tick := time.Tick(t.accuracy)
 
 	for {
@@ -257,13 +257,13 @@ func (t *timerService) Run() {
 }
 
 // AsyncRun function asynchronous execution timer service.
-func (t *timerService) AsyncRun() {
+func (t *TimerService) AsyncRun() {
 	go func() {
 		t.Run()
 	}()
 }
 
 // You can stop the timer service.
-func (t *timerService) StopTimerService() {
+func (t *TimerService) StopTimerService() {
 	close(t.done)
 }

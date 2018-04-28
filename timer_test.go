@@ -152,7 +152,7 @@ func TestTimerRegister(t *testing.T) {
 
 	s := new(exampleSvr)
 
-	timer := new(timerService)
+	timer := new(TimerService)
 
 	timer.Register(s)
 
@@ -183,7 +183,7 @@ func TestTimerReAdd(t *testing.T) {
 
 	s := new(exampleSvr)
 
-	var timer timerService
+	var timer TimerService
 
 	timer.Register(s)
 
