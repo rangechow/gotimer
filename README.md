@@ -34,7 +34,7 @@ import (
 
 type exampleSvr int
 
-func (s *exampleSvr) CheckTimer(ctx context.Context, id uint64) error {
+func (s *exampleSvr) CheckTimer(ctx context.Context, id string) error {
     fmt.Println("check timer uid = " + id)
     return nil
 }
@@ -50,7 +50,7 @@ import (
     "fmt"
     "time"
 
-    "github/rangechow/gotimer"
+    "github.com/rangechow/gotimer"
 )
 
 
@@ -58,11 +58,11 @@ func main() {
     
     s := new(exampleSvr)
 
-    var timer gotimer.timerService
+    var timer gotimer.TimerService
     timer.Register(s)
    
     go func() {
-      _, err := timer.AddTimer(time.Millisecond*1000, true, "CheckTimer", 10001)
+      _, err := timer.AddTimer(time.Millisecond*1000, true, "CheckTimer", "10001")
 
       if err != nil {
           fmt.Printf("add timer failed %v", err)
